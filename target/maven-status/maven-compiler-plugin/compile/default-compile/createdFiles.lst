@@ -1,1 +1,8 @@
-myapp\DemoServlet.class
+model\Rain.class
+model\Clouds.class
+model\Main.class
+model\Wind.class
+model\Coordinate.class
+model\System_Response.class
+model\WeatherResponse.class
+model\Weather.class
