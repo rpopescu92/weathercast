@@ -1,4 +1,4 @@
-package com.weather.entities;
+package entities;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -14,7 +14,10 @@ import java.util.List;
 public class WeatherEntity{
 
     @Id public Long id;
-    public int temperature;
+    public String cityName;
+    public String country;
+    public String mood;
+    public double temperature;
     public Date date;
 
     public WeatherEntity(){}
@@ -32,11 +35,11 @@ public class WeatherEntity{
         this.id = id;
     }
 
-    public int getTemperature() {
+    public double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
@@ -46,5 +49,29 @@ public class WeatherEntity{
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getMood() {
+        return mood;
+    }
+
+    public void setMood(String mood) {
+        this.mood = mood;
     }
 }

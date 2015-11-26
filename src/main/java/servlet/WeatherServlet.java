@@ -2,8 +2,11 @@ package servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.urlfetch.*;
+import com.googlecode.objectify.ObjectifyService;
+import entities.WeatherEntity;
 import model.WeatherResponse;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.net.URL;
+import java.util.Date;
 
 public class WeatherServlet extends HttpServlet {
 
@@ -25,41 +29,11 @@ public class WeatherServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-       /* URLFetchService fetcher = URLFetchServiceFactory.getURLFetchService();
-        try {
-            URL url = new URL("http://www.google.com");
-            com.google.appengine.api.urlfetch.HTTPRequest ret = new com.google.appengine.api.urlfetch.HTTPRequest(url);
-            //response = fetcher.fetch(url);
-
-            //byte[] content = response.getContent();
-            // if redirects are followed, this returns the final URL we are redirected to
-           // URL finalUrl = response.getFinalUrl();
-
-            // 200, 404, 500, etc
-            int responseCode = ret.getResponseCode();
-            //List<HTTPHeader> headers = response.getHeaders();
-
-            /*for (HTTPHeader header : headers) {
-                String headerName = header.getName();
-                String headerValue = header.getValue();
-            }
-
-            resp.setContentType("text/plain");
-            resp.getWriter().println("{ \"name\": \"World\" }");
-            resp.getWriter().println(responseCode);
-            ret.setPayload(request.getPayload());
-            ret.getFetchOptions().setDeadline(DEFAULT_TIMEOUT);
-        } catch (IOException e) {
-            // new URL throws MalformedUrlException, which is impossible for us here
-            // return Response.status(HttpStatus.BAD_REQUEST.value()).build();
-        }
-    }*/
-
 
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String cityName = req.getParameter("cityName");
         String urlRequest = String.format(url, cityName);
 
@@ -72,9 +46,35 @@ public class WeatherServlet extends HttpServlet {
         String stringContent = new String(content,"UTF-8");
 
         WeatherResponse weatherResponse = objectMapper.readValue(stringContent, WeatherResponse.class);
-        resp.getWriter().println(weatherResponse.getName());
+        WeatherEntity weatherEntity = new WeatherEntity();
+        weatherEntity.setCityName(weatherResponse.getName());
+        weatherEntity.setCountry(weatherResponse.getSys().getCountry());
+        weatherEntity.setTemperature(weatherResponse.getMain().getTemp()-273);
+        weatherEntity.setDate(new Date());
+        weatherEntity.setMood(weatherResponse.getWeather().get(0).getMain());
+        weatherEntity.setId(weatherResponse.getId());
+
+        saveData(weatherEntity);
+
+        req.setAttribute("cityWeather", weatherEntity);
+        req.getRequestDispatcher("/weather.jsp").forward(req, resp);
 
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doDelete(req, resp);
+        ObjectifyService.ofy().clear();
+        req.getRequestDispatcher("/weather.jsp").forward(req, resp);
+    }
+
+    private void saveData(WeatherEntity entity){
+        ObjectifyService.ofy().save().entity(entity).now();
+
+
+    }
+
+
 
     private Object getObjectFromBytes(byte[] responseContent) {
         ByteArrayInputStream bis = new ByteArrayInputStream(responseContent);

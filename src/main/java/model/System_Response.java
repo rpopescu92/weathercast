@@ -1,10 +1,13 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by roxanap on 26.11.2015.
  */
 public class System_Response {
 
+    @JsonIgnore
     private double message;
     private String country;
     private Long sunrise;
