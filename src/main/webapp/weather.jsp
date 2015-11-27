@@ -19,7 +19,7 @@
             <form  action="/weather" method="post" action="servlet">
               <div class="form-group">
                 <label for="exampleInputEmail1">City name</label>
-                <input type="text" class="form-control" name="cityName" id="cityName" value="${fn:escapeXml(cityName)}" placeholder="City name">
+                <input style = "width:232px !important;" type="text" class="form-control" name="cityName" id="cityName" value="${fn:escapeXml(cityName)}" placeholder="City name">
               </div>
               <button type="submit" class="btn btn-default">Show weather</button>
             </form>
@@ -31,7 +31,7 @@
         <div class="col-md-6">
             <table class="table table-striped">
               <thead>
-                <th>Data</th>
+                <th>Date</th>
                 <th>City Name</th>
                 <th>Temperature</th>
               </thead>
