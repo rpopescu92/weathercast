@@ -74,33 +74,4 @@ public class WeatherServlet extends HttpServlet {
 
     }
 
-
-
-    private Object getObjectFromBytes(byte[] responseContent) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(responseContent);
-        ObjectInput in = null;
-        Object response = null;
-        try {
-            in = new ObjectInputStream(bis);
-            response = in.readObject();
-        } catch (Exception e) {
-            return "Error while deserializng";
-        } finally {
-            try {
-                bis.close();
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }
-
-        return response;
-    }
-
 }
