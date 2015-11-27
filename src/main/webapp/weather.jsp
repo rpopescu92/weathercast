@@ -31,6 +31,7 @@
         <div class="col-md-6">
             <table class="table table-striped">
               <thead>
+                <th>Data</th>
                 <th>City Name</th>
                 <th>Temperature</th>
               </thead>
@@ -52,11 +53,14 @@
                          %>
                         <tr>
                         <%
+                                    pageContext.setAttribute("weather_date", weatherEntity.getDate());
                                     pageContext.setAttribute("name_content", weatherEntity.getCityName());
                                     pageContext.setAttribute("temperature_content",weatherEntity.getTemperature());
 
+
                         %>
 
+                            <td>${fn:escapeXml(weather_date)}</td>
                             <td>${fn:escapeXml(name_content)}</td>
                             <td>${fn:escapeXml(temperature_content)} Celsius</td>
 
