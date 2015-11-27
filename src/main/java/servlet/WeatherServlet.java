@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class WeatherServlet extends HttpServlet {
@@ -49,7 +50,9 @@ public class WeatherServlet extends HttpServlet {
         WeatherEntity weatherEntity = new WeatherEntity();
         weatherEntity.setCityName(weatherResponse.getName());
         weatherEntity.setCountry(weatherResponse.getSys().getCountry());
-        weatherEntity.setTemperature(weatherResponse.getMain().getTemp()-273);
+        weatherEntity.setTemperature(
+                Double.valueOf(new DecimalFormat("#.##").format(
+                        weatherResponse.getMain().getTemp()-273)));
         weatherEntity.setDate(new Date());
         weatherEntity.setMood(weatherResponse.getWeather().get(0).getMain());
         weatherEntity.setId(weatherResponse.getId());

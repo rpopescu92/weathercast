@@ -7,48 +7,68 @@
 
 <html>
 <head>
-
+    <script src="./jquery-1.11.3.min.js"></script>
+    <script src="./bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="./bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="./bootstrap.min.css.map" />
 </head>
 
 <body>
+    <div style="margin:10px;" class="row">
+        <div class="col-md-6">
+            <form  action="/weather" method="post" action="servlet">
+              <div class="form-group">
+                <label for="exampleInputEmail1">City name</label>
+                <input type="text" class="form-control" name="cityName" id="cityName" value="${fn:escapeXml(cityName)}" placeholder="City name">
+              </div>
+              <button type="submit" class="btn btn-default">Show weather</button>
+            </form>
 
-<form action="/weather" method="post" action="servlet">
-    <div><input type="text" name="cityName" value="${fn:escapeXml(cityName)}"/></div>
-    <div><input type="submit" value="Show weather"/></div>
-</form>
+        </div>
+    </div>
 
-<div id="result">
-    <pre>
-        ${requestScope.cityWeather}
-    </pre>
-    <%
+    <div style="margin:10px;" class="row">
+        <div class="col-md-6">
+            <table class="table table-striped">
+              <thead>
+                <th>City Name</th>
+                <th>Temperature</th>
+              </thead>
 
 
-        // Run an ancestor query to ensure we see the most up-to-date
-        // view of the Greetings belonging to the selected Guestbook.
-          List<WeatherEntity> weatherData = ObjectifyService.ofy()
-              .load()
-              .type(WeatherEntity.class)
-              .list();
+            <tbody>
+                    <%
+                        // Run an ancestor query to ensure we see the most up-to-date
+                        // view of the Greetings belonging to the selected Guestbook.
+                          List<WeatherEntity> weatherData = ObjectifyService.ofy()
+                              .load()
+                              .type(WeatherEntity.class)
+                              .list();
+                    %>
 
-        if (weatherData.isEmpty()) {
-    %>
-    <p>No data recorded.</p>
-    <%
-        } else {
-    %>
-    <p>Data recorded. </p>
-    <%
-            for (WeatherEntity weatherEntity : weatherData) {
-                pageContext.setAttribute("weather_content", weatherEntity.getCityName()+":"+weatherEntity.getTemperature());
+                        <%
+                                for (WeatherEntity weatherEntity : weatherData) {
 
-    %>
-    <p><b>${fn:escapeXml(weather_content)}</b></p>
-    <%
-            }
-        }
-    %>
-</div>
+                         %>
+                        <tr>
+                        <%
+                                    pageContext.setAttribute("name_content", weatherEntity.getCityName());
+                                    pageContext.setAttribute("temperature_content",weatherEntity.getTemperature());
+
+                        %>
+
+                            <td>${fn:escapeXml(name_content)}</td>
+                            <td>${fn:escapeXml(temperature_content)} Celsius</td>
+
+                            </tr>
+                        <% } %>
+
+            </tbody>
+
+            </table>
+        </div>
+
+    </div>
 
 </body>
 </html>
